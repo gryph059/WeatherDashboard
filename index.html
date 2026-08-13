@@ -1,0 +1,121 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Weather Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="weather-container">
+        <h1>Weather Dashboard</h1>
+        <input type="text" id="city-input" placeholder="Enter city name">
+        <button onclick="getGeoData()" id="get-city">Get Weather</button>
+    </div>
+    <div id="row-one">
+        <div id="city-name" class="info-card">
+            <p id="location">Springield</p>
+            <p id="time">00:00</p>
+            <p id="date">yyyy-mm-dd</p>
+        </div>
+        <div id="day-weather" class="info-card">
+            <div class="weather-top">
+                <div class="weather-icon-wrap">
+                    <p id="temp-like">Sunny</p>
+                    <img id="weather-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                </div>
+                <div class="weather-middle">
+                    <div class="weather-detail">
+                        <span class="detail-label">UV</span>
+                        <span id="uv" class="detail-value">15</span>
+                    </div>
+                    <div class="weather-detail">
+                        <span class="detail-label">Sunrise</span>
+                        <span id="sunrise" class="detail-value">00:00</span>
+                    </div>
+                    <div class="weather-detail">
+                        <span class="detail-label">Sunset</span>
+                        <span id="sunset" class="detail-value">00:00</span>
+                    </div>
+                </div>
+                <div class="temp-block">
+                    <p id="temp">0°F</p>
+                    <p id="high-low">H: 0°F L: 0°F</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="row-two">
+        <div id="week-forecast">
+        <h1>Weekly Forecast</h1>
+            <div class="forecast-day">
+                <p class="day-name">Mon</p>
+                <img id="mon-image" class="forecast-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                <p id="mon-forecast" class="forecast-temp">85°F</p>
+            </div>
+            <div class="forecast-day">
+                <p class="day-name">Tue</p>
+                <img id="tue-image" class="forecast-icon" src="/images/cloudy.svg" alt="Weather Icon">
+                <p id="tue-forecast" class="forecast-temp">82°F</p>
+            </div>
+            <div class="forecast-day">
+                <p class="day-name">Wed</p>
+                <img id="wed-image" class="forecast-icon" src="/images/rainy-1-day.svg" alt="Weather Icon">
+                <p id="wed-forecast" class="forecast-temp">78°F</p>
+            </div>
+            <div class="forecast-day">
+                <p class="day-name">Thu</p>
+                <img id="thu-image" class="forecast-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                <p id="thu-forecast" class="forecast-temp">80°F</p>
+            </div>
+            <div class="forecast-day">
+                <p class="day-name">Fri</p>
+                <img id="fri-image" class="forecast-icon" src="/images/cloudy.svg" alt="Weather Icon">
+                <p id="fri-forecast" class="forecast-temp">83°F</p>
+            </div>
+            <div class="forecast-day">
+                <p class="day-name">Sat</p>
+                <img id="sat-image" class="forecast-icon" src="/images/rainy-1-day.svg" alt="Weather Icon">
+                <p id="sat-forecast" class="forecast-temp">79°F</p>
+            </div>
+            <div class="forecast-day">
+                <p class="day-name">Sun</p>
+                <img id="sun-image" class="forecast-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                <p id="sun-forecast" class="forecast-temp">84°F</p>
+            </div>
+        </div>
+        <div id="hourly-forecast">
+            <h1>Hourly Forecast</h1>
+            <div class="hourly-forecast-container">
+                <div class="hourly-forecast-item">
+                    <p id="hone" class="hour">12 PM</p>
+                    <img id="ione" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <p id="tone" class="hourly-temp">85°F</p>
+                </div>
+                <div class="hourly-forecast-item">
+                    <p id="htwo" class="hour">1 PM</p>
+                    <img id="itwo" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <p id="ttwo" class="hourly-temp">86°F</p>
+                </div>
+                <div class="hourly-forecast-item">
+                    <p id="hthree" class="hour">2 PM</p>
+                    <img id="ithree" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <p id="tthree" class="hourly-temp">87°F</p>
+                </div>
+                <div class="hourly-forecast-item">
+                    <p id="hfour" class="hour">3 PM</p>
+                    <img id="ifour" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <p id="tfour" class="hourly-temp">88°F</p>
+                </div>
+                <div class="hourly-forecast-item">
+                    <p id="hfive" class="hour">4 PM</p>
+                    <img id="ifive" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <p id="tfive" class="hourly-temp">89°F</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="script.js" defer></script>
+</body>
+</html>
