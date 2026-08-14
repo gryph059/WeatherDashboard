@@ -65,7 +65,7 @@ function updateBoxTwo(x){
 } else if (x.current.cloud_cover > 65) {
   tempLike.innerText = "Cloudy"
   image.src = "images/cloudy.svg"
-} else if (x.current.is_day < 0){
+} else if (x.current.is_day <= 0){
   tempLike.innerText = "Night"
   image.src = "images/clear-night.svg"
 } else {
