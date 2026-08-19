@@ -1,5 +1,6 @@
 <html>
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css?v=3">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
@@ -27,46 +28,46 @@
         body.weather-snow #weather-animation { background-image: radial-gradient(circle, rgba(255, 255, 255, .95) 0 3px, transparent 3.5px), radial-gradient(circle, rgba(255, 255, 255, .7) 0 2px, transparent 2.5px); background-size: 92px 115px, 54px 78px; animation: preview-snow 2200ms linear infinite; }
         body.weather-snow .moving-cloud { display: none; }
         @keyframes preview-snow { from { background-position: 0 -115px, 18px -78px; } to { background-position: 46px 115px, -18px 78px; } }
-        body.weather-cloudy #city-name, body.weather-cloudy #day-weather, body.weather-cloudy #week-forecast, body.weather-cloudy #hourly-forecast, body.weather-cloudy #radar-panel { background-color: #dbe5eb; }
-        body.weather-snow #city-name, body.weather-snow #day-weather, body.weather-snow #week-forecast, body.weather-snow #hourly-forecast, body.weather-snow #radar-panel { background-color: #e9f5f8; }
-        body.weather-rain #city-name, body.weather-rain #day-weather, body.weather-rain #week-forecast, body.weather-rain #hourly-forecast, body.weather-rain #radar-panel { background-color: #d8e6ed; }
-        body.weather-night #city-name, body.weather-night #day-weather, body.weather-night #week-forecast, body.weather-night #hourly-forecast, body.weather-night #radar-panel { color: #eef7ff; background-color: #263b59; }
         body.weather-night #temp, body.weather-night #temp-like, body.weather-night #location, body.weather-night #time, body.weather-night h1, body.weather-night .day-name, body.weather-night .forecast-temp, body.weather-night .hourly-temp { color: #eef7ff; }
-        #row-two { display: grid !important; grid-template-columns: 48% 52% !important; column-gap: 0; row-gap: 0; align-items: stretch; margin-top: 28px !important; }
-        #week-forecast { grid-column: 1; grid-row: 1 / span 2; align-self: start; width: 76% !important; height: fit-content; margin: 0 !important; }
-        #hourly-forecast { grid-column: 2; grid-row: 1; align-self: start; width: 90% !important; margin: 0 !important; overflow: hidden; box-sizing: border-box; }
-        #day-weather { padding: 10px !important; }
-        #day-weather .weather-top { gap: 6px; }
-        #day-weather .weather-icon-wrap img { width: 72px; height: 72px; margin-left: 0; }
-        #day-weather #temp-like { font-size: 26px; }
-        #day-weather .weather-detail { padding: 5px 7px; }
-        #week-forecast h1 { padding: 8px 10px 4px; font-size: 1.05rem; }
-        #week-forecast .forecast-day { padding: 1px 10px; }
-        #week-forecast .forecast-icon { width: 24px; height: 24px; }
-        #hourly-forecast h1 { padding: 8px 10px 4px; font-size: 1.05rem; }
-        #radar-panel h1, #week-forecast h1, #hourly-forecast h1 { font-size: 18px !important; line-height: 1.1; }
-        #hourly-forecast .hourly-forecast-container { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: 100%; }
-        #hourly-forecast .hourly-forecast-item { min-width: 0; overflow: hidden; }
-        #hourly-forecast .hour { overflow: visible; text-overflow: clip; font-size: .65rem; text-align: center; white-space: nowrap; }
-        #hourly-forecast .hourly-temp { font-size: .8rem; }
-        #hourly-forecast .hourly-forecast-item { padding: 7px 4px 9px; }
-        #hourly-forecast .hourly-icon { width: 30px; height: 30px; margin: 5px 0 3px; }
-        #radar-panel { position: relative; top: -34px; z-index: 2; display: flex; flex-direction: column; align-self: stretch; justify-self: start; grid-column: 2; grid-row: 2; width: 90% !important; height: calc(100% + 34px); margin: 0; padding: 12px; box-sizing: border-box; background: #f8fbfd; border-radius: 16px; box-shadow: 0 20px 45px rgba(10, 28, 49, .42), 0 0 0 1px rgba(10, 28, 49, .16); filter: drop-shadow(0 12px 10px rgba(10, 28, 49, .3)); }
-        #radar-panel h1 { margin: 0 0 2px; color: #12243b; font-size: 1.25rem; }
+        #radar-panel { position: relative; z-index: 1; width: min(100%, 820px); margin: 22px auto 0; padding: 16px; background: #f8fbfd; border-radius: 18px; box-shadow: 0 0 10px rgba(0, 0, 0, 1); }
+        #radar-panel h1 { margin: 0 0 4px; color: #12243b; font-size: 1.45rem; }
         #radar-status { margin: 0 0 12px; color: #657487; }
-        #radar-map { flex: 1 1 auto; min-height: 160px; overflow: hidden; border-radius: 10px; }
-        @media (max-width: 480px) { #row-two { grid-template-columns: 42% 58% !important; } #week-forecast { width: 88% !important; } #hourly-forecast, #radar-panel { width: 100% !important; } }
-        @media (max-width: 360px) { body { padding: 12px; } #row-one, #row-two { width: 100%; gap: 16px; } #row-two { display: flex !important; flex-direction: column; } #city-name, #day-weather, #week-forecast, #hourly-forecast, #radar-panel { width: 100% !important; grid-column: auto; grid-row: auto; box-sizing: border-box; } #day-weather { padding: 16px !important; } #week-forecast h1, #hourly-forecast h1, #radar-panel h1 { font-size: 1.25rem !important; } #week-forecast .forecast-day { padding: 4px 16px; } #week-forecast .forecast-icon { width: 30px; height: 30px; } #hourly-forecast { height: auto !important; overflow: visible; } #hourly-forecast .hourly-forecast-container { height: auto; overflow-x: auto; grid-template-columns: repeat(5, minmax(64px, 1fr)); } #hourly-forecast .hour { font-size: .75rem; } #hourly-forecast .hourly-temp { font-size: .85rem; } #radar-panel { top: 0; height: auto; } }
-            @media (max-width: 360px) { #row-two { display: flex !important; flex-direction: column; } #week-forecast, #hourly-forecast, #radar-panel { width: 100% !important; grid-column: auto; grid-row: auto; } #hourly-forecast { height: auto !important; overflow: visible; } #hourly-forecast .hourly-forecast-container { height: auto; overflow-x: auto; } }
-            @media (max-width: 360px) { #radar-panel { padding: 10px; } #radar-map { height: 220px; } }
+        #radar-map { height: 260px; overflow: hidden; border-radius: 12px; }
+        #radar-panel, #hourly-forecast { width: min(90%, 320px); height: 260px; box-sizing: border-box; }
+        #hourly-forecast { flex: 0 0 320px; }
+        #radar-panel { display: flex; flex-direction: column; }
+        #radar-map { flex: 1 1 auto; min-height: 0; height: auto; }
+        #row-two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: auto 1fr; grid-template-areas: "weekly hourly" "weekly radar"; align-items: stretch; column-gap: 20px; row-gap: 0; }
+        #week-forecast { grid-area: weekly; width: 100%; margin: 20px 0 0; box-sizing: border-box; }
+        #hourly-forecast { grid-area: hourly; display: flex; flex-direction: column; width: 100%; margin: 20px 0 0; flex: none; min-width: 0; overflow: hidden; box-sizing: border-box; }
+        #hourly-forecast { height: 180px; }
+        #radar-panel { grid-area: radar; width: 100%; height: auto; min-height: 260px; margin: 8px 0 0; align-self: stretch; }
+        #hourly-forecast .hourly-forecast-container { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); flex: 1 1 auto; min-height: 0; width: 100%; min-width: 0; overflow: hidden; box-sizing: border-box; }
+        #hourly-forecast .hourly-forecast-item { min-width: 0; width: 100%; height: 100%; overflow: hidden; padding: 7px 2px; box-sizing: border-box; }
+        #hourly-forecast .hour { overflow: hidden; font-size: .65rem; text-align: center; white-space: nowrap; }
+        #hourly-forecast .hourly-icon { width: 30px; height: 30px; margin: 5px 0 3px; }
+        #hourly-forecast .hourly-temp { font-size: .8rem; white-space: nowrap; }
+        @media (min-width: 641px) { #hourly-forecast .hourly-temp { position: relative; top: -6px; } }
+        #week-forecast h1, #hourly-forecast h1 { font-size: 1.1rem; }
+        #day-weather { padding: 10px; }
+        #day-weather .weather-top { gap: 8px; margin-bottom: 8px; }
+        #day-weather .weather-icon-wrap { width: 80px; }
+        #day-weather .weather-icon-wrap img { width: 72px; margin: 4px 0 0; }
+        #day-weather #temp-like { font-size: 24px; }
+        #day-weather .weather-middle { width: 100px; gap: 4px; }
+        #day-weather .weather-detail { min-width: 64px; padding: 6px 8px; }
+        @media (max-width: 480px) { #radar-panel, #hourly-forecast { width: 100%; } #hourly-forecast { flex-basis: 100%; } }
+        @media (max-width: 640px) and (min-width: 381px) { #row-two { grid-template-columns: 42% 58%; column-gap: 8px; row-gap: 0; } #week-forecast, #hourly-forecast { width: 100%; margin: 20px 0 0; } #radar-panel { width: 100%; margin: 8px 0 0; } }
+        @media (max-width: 380px) { #row-two { grid-template-columns: 1fr; grid-template-areas: "weekly" "hourly" "radar"; } #week-forecast, #hourly-forecast, #radar-panel { width: 100%; margin: 20px 0 0; } }
+        @media (max-width: 480px) { #radar-panel { padding: 14px; } #radar-map { height: 280px; } }
         #location-modal[hidden] { display: none; }
-        #location-modal { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(10, 28, 49, .52); backdrop-filter: blur(5px); }
-        .location-modal-card { width: min(100%, 390px); padding: 30px; color: #f8fbfd; text-align: center; background: #12243b; border: 1px solid rgba(255, 255, 255, .18); border-radius: 20px; box-shadow: 0 24px 60px rgba(10, 28, 49, .35); animation: modal-appear 180ms ease-out; }
-        .location-modal-icon { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 16px; color: #172536; font-size: 1.7rem; background: #ffb547; border-radius: 50%; }
+        #location-modal { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(100, 149, 237, .28); backdrop-filter: blur(5px); }
+        .location-modal-card { width: min(100%, 390px); padding: 30px; color: #111; text-align: center; background: #fff; border: 2px solid cornflowerblue; border-radius: 12px; box-shadow: 0 0 18px rgba(0, 0, 0, .28); animation: modal-appear 180ms ease-out; }
+        .location-modal-icon { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 16px; color: #fff; font-size: 1.7rem; background: cornflowerblue; border-radius: 50%; }
         .location-modal-card h2 { margin: 0 0 8px; font-size: 1.7rem; }
-        .location-modal-card p { margin: 0 0 22px; color: #c9d8e2; font-size: 1.05rem; overflow-wrap: anywhere; }
-        #close-location-modal { width: 100%; padding: 11px 18px; color: #172536; font-weight: 700; background: #ffb547; border: 0; border-radius: 10px; cursor: pointer; }
-        #close-location-modal:hover { background: #ffc76a; }
+        .location-modal-card p { margin: 0 0 22px; color: #333; font-size: 1.05rem; overflow-wrap: anywhere; }
+        #close-location-modal { width: 100%; padding: 11px 18px; color: #fff; font-weight: 700; background: cornflowerblue; border: 0; border-radius: 10px; cursor: pointer; }
+        #close-location-modal:hover { background: #527fd5; }
         @keyframes modal-appear { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
     </style>
 </head>
@@ -99,7 +100,7 @@
             <div class="weather-top">
                 <div class="weather-icon-wrap">
                     <p id="temp-like">Sunny</p>
-                    <img id="weather-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <img id="weather-icon" src="images/clear-day.svg" alt="Weather Icon">
                 </div>
                 <div class="weather-middle">
                     <div class="weather-detail">
@@ -127,37 +128,37 @@
         <h1>Weekly Forecast</h1>
             <div class="forecast-day">
                 <p class="day-name">Mon</p>
-                <img id="mon-image" class="forecast-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                <img id="mon-image" class="forecast-icon" src="images/clear-day.svg" alt="Weather Icon">
                 <p id="mon-forecast" class="forecast-temp">85°F</p>
             </div>
             <div class="forecast-day">
                 <p class="day-name">Tue</p>
-                <img id="tue-image" class="forecast-icon" src="/images/cloudy.svg" alt="Weather Icon">
+                <img id="tue-image" class="forecast-icon" src="images/cloudy.svg" alt="Weather Icon">
                 <p id="tue-forecast" class="forecast-temp">82°F</p>
             </div>
             <div class="forecast-day">
                 <p class="day-name">Wed</p>
-                <img id="wed-image" class="forecast-icon" src="/images/rainy-1-day.svg" alt="Weather Icon">
+                <img id="wed-image" class="forecast-icon" src="images/rainy-1-day.svg" alt="Weather Icon">
                 <p id="wed-forecast" class="forecast-temp">78°F</p>
             </div>
             <div class="forecast-day">
                 <p class="day-name">Thu</p>
-                <img id="thu-image" class="forecast-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                <img id="thu-image" class="forecast-icon" src="images/clear-day.svg" alt="Weather Icon">
                 <p id="thu-forecast" class="forecast-temp">80°F</p>
             </div>
             <div class="forecast-day">
                 <p class="day-name">Fri</p>
-                <img id="fri-image" class="forecast-icon" src="/images/cloudy.svg" alt="Weather Icon">
+                <img id="fri-image" class="forecast-icon" src="images/cloudy.svg" alt="Weather Icon">
                 <p id="fri-forecast" class="forecast-temp">83°F</p>
             </div>
             <div class="forecast-day">
                 <p class="day-name">Sat</p>
-                <img id="sat-image" class="forecast-icon" src="/images/rainy-1-day.svg" alt="Weather Icon">
+                <img id="sat-image" class="forecast-icon" src="images/rainy-1-day.svg" alt="Weather Icon">
                 <p id="sat-forecast" class="forecast-temp">79°F</p>
             </div>
             <div class="forecast-day">
                 <p class="day-name">Sun</p>
-                <img id="sun-image" class="forecast-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                <img id="sun-image" class="forecast-icon" src="images/clear-day.svg" alt="Weather Icon">
                 <p id="sun-forecast" class="forecast-temp">84°F</p>
             </div>
         </div>
@@ -166,27 +167,27 @@
             <div class="hourly-forecast-container">
                 <div class="hourly-forecast-item">
                     <p id="hone" class="hour">12 PM</p>
-                    <img id="ione" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <img id="ione" class="hourly-icon" src="images/clear-day.svg" alt="Weather Icon">
                     <p id="tone" class="hourly-temp">85°F</p>
                 </div>
                 <div class="hourly-forecast-item">
                     <p id="htwo" class="hour">1 PM</p>
-                    <img id="itwo" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <img id="itwo" class="hourly-icon" src="images/clear-day.svg" alt="Weather Icon">
                     <p id="ttwo" class="hourly-temp">86°F</p>
                 </div>
                 <div class="hourly-forecast-item">
                     <p id="hthree" class="hour">2 PM</p>
-                    <img id="ithree" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <img id="ithree" class="hourly-icon" src="images/clear-day.svg" alt="Weather Icon">
                     <p id="tthree" class="hourly-temp">87°F</p>
                 </div>
                 <div class="hourly-forecast-item">
                     <p id="hfour" class="hour">3 PM</p>
-                    <img id="ifour" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <img id="ifour" class="hourly-icon" src="images/clear-day.svg" alt="Weather Icon">
                     <p id="tfour" class="hourly-temp">88°F</p>
                 </div>
                 <div class="hourly-forecast-item">
                     <p id="hfive" class="hour">4 PM</p>
-                    <img id="ifive" class="hourly-icon" src="/images/clear-day.svg" alt="Weather Icon">
+                    <img id="ifive" class="hourly-icon" src="images/clear-day.svg" alt="Weather Icon">
                     <p id="tfive" class="hourly-temp">89°F</p>
                 </div>
             </div>
