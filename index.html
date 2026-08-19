@@ -1,21 +1,97 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
     <title>Weather Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        body { position: relative; isolation: isolate; }
+        #weather-animation { position: fixed; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; }
+        #weather-container, #row-one, #row-two { position: relative; z-index: 1; }
+        .moving-cloud { position: absolute; left: -240px; display: block; width: 190px; height: 58px; border-radius: 50px; background: rgba(255, 255, 255, 0.42); filter: blur(1px); animation: preview-clouds 18s linear infinite; }
+        .moving-cloud::before, .moving-cloud::after { position: absolute; bottom: 18px; border-radius: 50%; background: inherit; content: ""; }
+        .moving-cloud::before { left: 36px; width: 78px; height: 78px; }
+        .moving-cloud::after { left: 100px; width: 58px; height: 58px; }
+        .cloud-one { top: 20%; animation-delay: -2s; }
+        .cloud-two { top: 48%; opacity: .65; transform: scale(.75); animation-delay: -9s; }
+        .cloud-three { top: 74%; opacity: .5; transform: scale(1.15); animation-delay: -14s; }
+        @keyframes preview-clouds { from { margin-left: 0; } to { margin-left: calc(100vw + 480px); } }
+        body.weather-rain #weather-animation { background-image: radial-gradient(ellipse 2px 8px at center, rgba(210, 239, 247, .62) 0 65%, transparent 72%), radial-gradient(ellipse 1.3px 6px at center, rgba(210, 239, 247, .38) 0 65%, transparent 72%); background-size: 110px 180px, 150px 230px; animation: preview-rain 1400ms linear infinite; }
+        body.weather-rain.rain-heavy #weather-animation { opacity: .9; background-size: 58px 92px, 82px 126px; animation-duration: 950ms; }
+        body.weather-rain.rain-light #weather-animation { opacity: .45; background-size: 175px 285px, 220px 340px; animation-duration: 1900ms; }
+        body.weather-rain .moving-cloud { display: none; }
+        @keyframes preview-rain { from { background-position: 0 -180px, 24px -230px; } to { background-position: 30px 180px, -24px 230px; } }
+        body.weather-snow #weather-animation { background-image: radial-gradient(circle, rgba(255, 255, 255, .95) 0 3px, transparent 3.5px), radial-gradient(circle, rgba(255, 255, 255, .7) 0 2px, transparent 2.5px); background-size: 92px 115px, 54px 78px; animation: preview-snow 2200ms linear infinite; }
+        body.weather-snow .moving-cloud { display: none; }
+        @keyframes preview-snow { from { background-position: 0 -115px, 18px -78px; } to { background-position: 46px 115px, -18px 78px; } }
+        body.weather-cloudy #city-name, body.weather-cloudy #day-weather, body.weather-cloudy #week-forecast, body.weather-cloudy #hourly-forecast, body.weather-cloudy #radar-panel { background-color: #dbe5eb; }
+        body.weather-snow #city-name, body.weather-snow #day-weather, body.weather-snow #week-forecast, body.weather-snow #hourly-forecast, body.weather-snow #radar-panel { background-color: #e9f5f8; }
+        body.weather-rain #city-name, body.weather-rain #day-weather, body.weather-rain #week-forecast, body.weather-rain #hourly-forecast, body.weather-rain #radar-panel { background-color: #d8e6ed; }
+        body.weather-night #city-name, body.weather-night #day-weather, body.weather-night #week-forecast, body.weather-night #hourly-forecast, body.weather-night #radar-panel { color: #eef7ff; background-color: #263b59; }
+        body.weather-night #temp, body.weather-night #temp-like, body.weather-night #location, body.weather-night #time, body.weather-night h1, body.weather-night .day-name, body.weather-night .forecast-temp, body.weather-night .hourly-temp { color: #eef7ff; }
+        #row-two { display: grid !important; grid-template-columns: 48% 52% !important; column-gap: 0; row-gap: 0; align-items: stretch; margin-top: 28px !important; }
+        #week-forecast { grid-column: 1; grid-row: 1 / span 2; align-self: start; width: 76% !important; height: fit-content; margin: 0 !important; }
+        #hourly-forecast { grid-column: 2; grid-row: 1; align-self: start; width: 90% !important; margin: 0 !important; overflow: hidden; box-sizing: border-box; }
+        #day-weather { padding: 10px !important; }
+        #day-weather .weather-top { gap: 6px; }
+        #day-weather .weather-icon-wrap img { width: 72px; height: 72px; margin-left: 0; }
+        #day-weather #temp-like { font-size: 26px; }
+        #day-weather .weather-detail { padding: 5px 7px; }
+        #week-forecast h1 { padding: 8px 10px 4px; font-size: 1.05rem; }
+        #week-forecast .forecast-day { padding: 1px 10px; }
+        #week-forecast .forecast-icon { width: 24px; height: 24px; }
+        #hourly-forecast h1 { padding: 8px 10px 4px; font-size: 1.05rem; }
+        #radar-panel h1, #week-forecast h1, #hourly-forecast h1 { font-size: 18px !important; line-height: 1.1; }
+        #hourly-forecast .hourly-forecast-container { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); width: 100%; }
+        #hourly-forecast .hourly-forecast-item { min-width: 0; overflow: hidden; }
+        #hourly-forecast .hour { overflow: visible; text-overflow: clip; font-size: .65rem; text-align: center; white-space: nowrap; }
+        #hourly-forecast .hourly-temp { font-size: .8rem; }
+        #hourly-forecast .hourly-forecast-item { padding: 7px 4px 9px; }
+        #hourly-forecast .hourly-icon { width: 30px; height: 30px; margin: 5px 0 3px; }
+        #radar-panel { position: relative; top: -34px; z-index: 2; display: flex; flex-direction: column; align-self: stretch; justify-self: start; grid-column: 2; grid-row: 2; width: 90% !important; height: calc(100% + 34px); margin: 0; padding: 12px; box-sizing: border-box; background: #f8fbfd; border-radius: 16px; box-shadow: 0 20px 45px rgba(10, 28, 49, .42), 0 0 0 1px rgba(10, 28, 49, .16); filter: drop-shadow(0 12px 10px rgba(10, 28, 49, .3)); }
+        #radar-panel h1 { margin: 0 0 2px; color: #12243b; font-size: 1.25rem; }
+        #radar-status { margin: 0 0 12px; color: #657487; }
+        #radar-map { flex: 1 1 auto; min-height: 160px; overflow: hidden; border-radius: 10px; }
+        @media (max-width: 480px) { #row-two { grid-template-columns: 42% 58% !important; } #week-forecast { width: 88% !important; } #hourly-forecast, #radar-panel { width: 100% !important; } }
+        @media (max-width: 360px) { body { padding: 12px; } #row-one, #row-two { width: 100%; gap: 16px; } #row-two { display: flex !important; flex-direction: column; } #city-name, #day-weather, #week-forecast, #hourly-forecast, #radar-panel { width: 100% !important; grid-column: auto; grid-row: auto; box-sizing: border-box; } #day-weather { padding: 16px !important; } #week-forecast h1, #hourly-forecast h1, #radar-panel h1 { font-size: 1.25rem !important; } #week-forecast .forecast-day { padding: 4px 16px; } #week-forecast .forecast-icon { width: 30px; height: 30px; } #hourly-forecast { height: auto !important; overflow: visible; } #hourly-forecast .hourly-forecast-container { height: auto; overflow-x: auto; grid-template-columns: repeat(5, minmax(64px, 1fr)); } #hourly-forecast .hour { font-size: .75rem; } #hourly-forecast .hourly-temp { font-size: .85rem; } #radar-panel { top: 0; height: auto; } }
+            @media (max-width: 360px) { #row-two { display: flex !important; flex-direction: column; } #week-forecast, #hourly-forecast, #radar-panel { width: 100% !important; grid-column: auto; grid-row: auto; } #hourly-forecast { height: auto !important; overflow: visible; } #hourly-forecast .hourly-forecast-container { height: auto; overflow-x: auto; } }
+            @media (max-width: 360px) { #radar-panel { padding: 10px; } #radar-map { height: 220px; } }
+        #location-modal[hidden] { display: none; }
+        #location-modal { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(10, 28, 49, .52); backdrop-filter: blur(5px); }
+        .location-modal-card { width: min(100%, 390px); padding: 30px; color: #f8fbfd; text-align: center; background: #12243b; border: 1px solid rgba(255, 255, 255, .18); border-radius: 20px; box-shadow: 0 24px 60px rgba(10, 28, 49, .35); animation: modal-appear 180ms ease-out; }
+        .location-modal-icon { display: grid; place-items: center; width: 52px; height: 52px; margin: 0 auto 16px; color: #172536; font-size: 1.7rem; background: #ffb547; border-radius: 50%; }
+        .location-modal-card h2 { margin: 0 0 8px; font-size: 1.7rem; }
+        .location-modal-card p { margin: 0 0 22px; color: #c9d8e2; font-size: 1.05rem; overflow-wrap: anywhere; }
+        #close-location-modal { width: 100%; padding: 11px 18px; color: #172536; font-weight: 700; background: #ffb547; border: 0; border-radius: 10px; cursor: pointer; }
+        #close-location-modal:hover { background: #ffc76a; }
+        @keyframes modal-appear { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    </style>
 </head>
-<body>
+<body class="weather-cloudy">
+    <div id="weather-animation" aria-hidden="true">
+        <span class="moving-cloud cloud-one"></span>
+        <span class="moving-cloud cloud-two"></span>
+        <span class="moving-cloud cloud-three"></span>
+    </div>
+    <div id="location-modal" role="dialog" aria-modal="true" aria-labelledby="location-modal-title" hidden>
+        <div class="location-modal-card">
+            <div class="location-modal-icon" aria-hidden="true">?</div>
+            <h2 id="location-modal-title">Location not found</h2>
+            <p id="location-modal-message"></p>
+            <button id="close-location-modal" type="button">Try another location</button>
+        </div>
+    </div>
     <div id="weather-container">
         <h1>Weather Dashboard</h1>
-        <input type="text" id="city-input" placeholder="Enter city name">
+        <input type="text" id="city-input" value="Chicago Illinois" placeholder="Enter city name">
         <button onclick="getGeoData()" id="get-city">Get Weather</button>
     </div>
     <div id="row-one">
         <div id="city-name" class="info-card">
-            <p id="location">Springield</p>
+            <p id="location">Chicago Illinois</p>
             <p id="time">00:00</p>
             <p id="date">yyyy-mm-dd</p>
         </div>
@@ -115,7 +191,12 @@
                 </div>
             </div>
         </div>
+        <section id="radar-panel">
+            <h1>Weather Radar</h1>
+            <div id="radar-map" aria-label="Weather radar map"></div>
+        </section>
     </div>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="script.js" defer></script>
 </body>
 </html>
