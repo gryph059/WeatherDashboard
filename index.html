@@ -59,6 +59,7 @@
         @media (max-width: 480px) { #radar-panel, #hourly-forecast { width: 100%; } #hourly-forecast { flex-basis: 100%; } }
         @media (max-width: 640px) and (min-width: 381px) { #row-two { grid-template-columns: 42% 58%; column-gap: 8px; row-gap: 0; } #week-forecast, #hourly-forecast { width: 100%; margin: 20px 0 0; } #radar-panel { width: 100%; margin: 8px 0 0; } }
         @media (max-width: 380px) { #row-two { grid-template-columns: 1fr; grid-template-areas: "weekly" "hourly" "radar"; } #week-forecast, #hourly-forecast, #radar-panel { width: 100%; margin: 20px 0 0; } }
+        @media (max-width: 640px) { #hourly-forecast { height: auto; overflow: visible; } #hourly-forecast .hourly-forecast-container { overflow: visible; } #hourly-forecast .hourly-forecast-item { height: auto; overflow: visible; padding: 7px 2px 12px; } }
         @media (max-width: 480px) { #radar-panel { padding: 14px; } #radar-map { height: 280px; } }
         #location-modal[hidden] { display: none; }
         #location-modal { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(100, 149, 237, .28); backdrop-filter: blur(5px); }
