@@ -12,6 +12,7 @@
         body { position: relative; isolation: isolate; }
         #weather-animation { position: fixed; z-index: 0; inset: 0; overflow: hidden; pointer-events: none; }
         #weather-container, #row-one, #row-two { position: relative; z-index: 1; }
+        #weather-container { z-index: 5; }
         .moving-cloud { position: absolute; left: -240px; display: block; width: 190px; height: 58px; border-radius: 50px; background: rgba(255, 255, 255, 0.42); filter: blur(1px); animation: preview-clouds 18s linear infinite; }
         .moving-cloud::before, .moving-cloud::after { position: absolute; bottom: 18px; border-radius: 50%; background: inherit; content: ""; }
         .moving-cloud::before { left: 36px; width: 78px; height: 78px; }
@@ -70,6 +71,14 @@
         #close-location-modal { width: 100%; padding: 11px 18px; color: #fff; font-weight: 700; background: cornflowerblue; border: 0; border-radius: 10px; cursor: pointer; }
         #close-location-modal:hover { background: #527fd5; }
         @keyframes modal-appear { from { opacity: 0; transform: translateY(8px) scale(.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        #city-input-wrap { position: relative; display: inline-block; width: min(100%, 250px); vertical-align: top; }
+        #city-input-wrap #city-input { width: 100%; margin-bottom: 10px; box-sizing: border-box; }
+        .location-suggestions { position: absolute; top: 100%; left: 0; right: 0; z-index: 20; text-align: left; background: #fff; border: 1px solid cornflowerblue; border-top: 0; border-radius: 0 0 10px 10px; max-height: 220px; overflow-y: auto; box-shadow: 0 6px 14px rgba(0, 0, 0, .18); }
+        .location-suggestions[hidden] { display: none; }
+        .location-suggestion-item { padding: 8px 12px; font-size: .9rem; color: #172536; cursor: pointer; border-bottom: 1px solid rgba(0, 0, 0, .06); }
+        .location-suggestion-item:last-child { border-bottom: 0; }
+        .location-suggestion-item:hover { background: cornflowerblue; color: #fff; }
+        .location-suggestions-status { padding: 8px 12px; font-size: .85rem; color: #657487; }
     </style>
 </head>
 <body class="weather-cloudy">
@@ -88,7 +97,10 @@
     </div>
     <div id="weather-container">
         <h1>Weather Dashboard</h1>
-        <input type="text" id="city-input" value="Chicago Illinois" placeholder="Enter city name">
+        <div id="city-input-wrap">
+            <input type="text" id="city-input" value="Chicago Illinois" placeholder="Enter city name" autocomplete="off">
+            <div id="location-suggestions" class="location-suggestions" hidden></div>
+        </div>
         <button onclick="getGeoData()" id="get-city">Get Weather</button>
     </div>
     <div id="row-one">
