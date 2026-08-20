@@ -1,5 +1,6 @@
 const searchInput = document.getElementById("city-input");
 const searchButton = document.getElementById("get-city");
+const citySuggestionsBox = document.getElementById("location-suggestions");
 let resolvedLocationName = "";
 const locationModal = document.getElementById("location-modal");
 const locationModalMessage = document.getElementById("location-modal-message");
@@ -23,12 +24,100 @@ locationModal.addEventListener("click", event => {
   }
 })
 
+function hideLocationSuggestions() {
+  citySuggestionsBox.hidden = true
+  citySuggestionsBox.innerHTML = ""
+}
+
+function renderLocationSuggestions(items) {
+  citySuggestionsBox.innerHTML = items.length
+    ? items.map((item, index) => `<div class="location-suggestion-item" data-index="${index}">${item.displayName}</div>`).join("")
+    : `<div class="location-suggestions-status">No matching locations.</div>`
+  citySuggestionsBox.hidden = false
+}
+
+let lastSuggestions = []
+let suggestionsRequestToken = 0
+let suggestionsDebounce
+
+async function fetchLocationSuggestions(query) {
+  const token = ++suggestionsRequestToken
+  try {
+    const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=8&language=en&format=json`
+    const response = await fetch(url)
+    if (!response.ok) {
+      throw new Error(`Suggestion search failed with status ${response.status}`)
+    }
+    const data = await response.json()
+    if (token !== suggestionsRequestToken) {
+      return
+    }
+    lastSuggestions = (data.results || []).map(place => ({
+      displayName: [place.name, place.admin1, place.admin1 ? null : place.country].filter(Boolean).join(" "),
+      latitude: place.latitude,
+      longitude: place.longitude,
+      name: place.name,
+      admin1: place.admin1
+    }))
+    renderLocationSuggestions(lastSuggestions)
+  } catch (error) {
+    if (token !== suggestionsRequestToken) {
+      return
+    }
+    console.error(error.message)
+    citySuggestionsBox.innerHTML = `<div class="location-suggestions-status">Couldn't load suggestions.</div>`
+    citySuggestionsBox.hidden = false
+  }
+}
+
+function scheduleLocationSuggestions() {
+  const query = searchInput.value.trim()
+  clearTimeout(suggestionsDebounce)
+  if (query.length < 2) {
+    hideLocationSuggestions()
+    return
+  }
+  suggestionsDebounce = setTimeout(() => fetchLocationSuggestions(query), 250)
+}
+
+searchInput.addEventListener("input", scheduleLocationSuggestions)
+searchInput.addEventListener("click", scheduleLocationSuggestions)
+searchInput.addEventListener("focus", scheduleLocationSuggestions)
+
+searchInput.addEventListener("keydown", event => {
+  if (event.key === "Escape") {
+    hideLocationSuggestions()
+  }
+})
+
+citySuggestionsBox.addEventListener("click", event => {
+  const item = event.target.closest(".location-suggestion-item")
+  if (!item || !item.dataset.index) {
+    return
+  }
+  const selected = lastSuggestions[Number(item.dataset.index)]
+  if (!selected) {
+    return
+  }
+  searchInput.value = selected.displayName
+  resolvedLocationName = selected.displayName
+  hideLocationSuggestions()
+  getGeoWeather(selected.latitude, selected.longitude)
+})
+
+document.addEventListener("click", event => {
+  if (!event.target.closest("#city-input-wrap")) {
+    hideLocationSuggestions()
+  }
+})
+
 async function getGeoData() {
   let search = searchInput.value.trim();
   if (!search) {
     showLocationModal("Enter a city or location to search for its weather.")
     return
   }
+  hideLocationSuggestions()
   try {
     const words = search.split(/\s+/)
     const searchTerms = [...new Set([
