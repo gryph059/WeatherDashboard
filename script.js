@@ -1,5 +1,6 @@
 const searchInput = document.getElementById("city-input");
 const searchButton = document.getElementById("get-city");
+let resolvedLocationName = "";
 const locationModal = document.getElementById("location-modal");
 const locationModalMessage = document.getElementById("location-modal-message");
 const closeLocationModal = document.getElementById("close-location-modal");
@@ -29,11 +30,18 @@ async function getGeoData() {
     return
   }
   try {
+    const words = search.split(/\s+/)
     const searchTerms = [...new Set([
+      // prefer qualified guesses first, since the raw string can match unrelated places
+      // e.g. "Springfield MO" (no comma) once matched "Wilbraham, MA" instead of Springfield, Missouri
+      search.includes(",") ? search : null,
+      // treat the last word as a state/country qualifier, e.g. "Springfield Illinois" -> "Springfield, Illinois"
+      words.length > 1 ? `${words.slice(0, -1).join(" ")}, ${words[words.length - 1]}` : null,
+      // handle two-word qualifiers, e.g. "Springfield New York" -> "Springfield, New York"
+      words.length > 2 ? `${words.slice(0, -2).join(" ")}, ${words.slice(-2).join(" ")}` : null,
       search,
-      search.split(/\s+/).slice(0, 2).join(" "),
-      search.split(/\s+/)[0]
-    ])]
+      words[0]
+    ].filter(Boolean))]
     let location
 
     for (const searchTerm of searchTerms) {
@@ -53,6 +61,7 @@ async function getGeoData() {
       showLocationModal(`We couldn't find "${search}". Check the spelling and try again.`)
       return
     }
+    resolvedLocationName = [location.name, location.admin1].filter(Boolean).join(" ")
     let long = location.longitude;
     let lat = location.latitude;
     getGeoWeather(lat, long);
@@ -142,7 +151,7 @@ function updateBoxOne(x){
     let final = document.getElementById("time");
     final.innerText = time;
   let loc = document.getElementById("location");
-    loc.innerText = searchInput.value;
+    loc.innerText = resolvedLocationName || searchInput.value;
     console.log(loc);
   let date = document.getElementById("date");
     let numDate = x.current.time;
